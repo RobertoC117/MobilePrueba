@@ -1,27 +1,36 @@
 import React from 'react'
-import { View } from 'react-native'
+import { View, ToastAndroid, Keyboard } from 'react-native'
 import { useFormik } from 'formik'
 import {TextInput, Button, HelperText} from 'react-native-paper'
 import * as Yup from 'yup'
 
 import { hasErrorOn } from '../../utils/functions'
 import { formsStyles } from '../../styles'
+import {farmaLogin} from '../../api/auth'
+import useAuth from '../../hooks/useAuth'
 
 export default function Login(props) {
 
     const {changeForm, navigation} = props
 
+    const {login} = useAuth()
+
     const formik = useFormik({
         initialValues,
         validationSchema: Yup.object(schemaValidation()),
         onSubmit: async(formData)=>{
-            console.log(formData)
-            navigation.push("app")
+            try {
+                Keyboard.dismiss()
+                const {status, data} = await farmaLogin(formData)
+                if(status !== 200) throw new Error(data.errors[0].msg)
+                login(data)
+                navigation.push("app")
+            } catch (error) {
+                ToastAndroid.showWithGravity(error.message, ToastAndroid.SHORT, ToastAndroid.CENTER)
+            }
+            
         }
     })
-
-    // console.log("Errores", formik.errors)
-    // console.log("Tocados",formik.touched)
 
     return (
         <View>
