@@ -5,7 +5,7 @@ import { layoutStyles } from '../../styles'
 export default function Main() {
     return (
         <View style={layoutStyles.container}>
-            <Text>HOLA SOY EL MAIN</Text>
+            <Text>CART</Text>
         </View>
     )
 }

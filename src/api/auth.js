@@ -23,15 +23,29 @@ export const farmaLogin = async(formData) =>{
     }
 }
 
-export const googleLogin = async(formData) =>{
-
+export const googleLogin = async(token) =>{
+    try {
+        const config = {
+            method:'post',
+            url: `${API_URL}/auth/google/android`,
+            headers:{ "Content-Type": "application/json" },
+            data: JSON.stringify({idToken: token})
+        }
+        const {status, data} = await axios(config)
+        return{ status, data }
+    } catch (error) {
+        console.log("error", error.response.data)
+        return {
+            status: error.response.status,
+            data: error.response.data
+        }
+    }
 }
 
 export const register = async(formData) =>{
     try {
         const {nombre, ...restData} = formData
         restData.name = nombre
-        restData.gender = "male"
 
         const config = {
             method:'post',

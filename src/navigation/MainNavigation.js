@@ -1,12 +1,14 @@
 import React from 'react'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import {NavigationContainer} from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import {createStackNavigator} from '@react-navigation/stack'
 import { useTheme } from 'react-native-paper';
+
 import AuthScreen from '../screens/Auth'
 import AppNavigation from './AppNavigation'
 import useAuth from '../hooks/useAuth'
 
-const Stack = createNativeStackNavigator()
+const Stack = createStackNavigator()
 
 export default function MainNavigation() {
     const theme = useTheme()

@@ -3,10 +3,12 @@ import { View, ToastAndroid, Keyboard } from 'react-native'
 import { useFormik } from 'formik'
 import {TextInput, Button, HelperText} from 'react-native-paper'
 import * as Yup from 'yup'
+import * as Google from 'expo-google-app-auth';
 
 import { hasErrorOn } from '../../utils/functions'
 import { formsStyles } from '../../styles'
-import {farmaLogin} from '../../api/auth'
+import {farmaLogin, googleLogin} from '../../api/auth'
+import { androidClientId, } from '../../utils/constants'
 import useAuth from '../../hooks/useAuth'
 
 export default function Login(props) {
@@ -14,6 +16,36 @@ export default function Login(props) {
     const {changeForm, navigation} = props
 
     const {login} = useAuth()
+
+    const handleGoogleSignIn = async() =>{
+        try {
+
+            const config = {
+                androidClientId,
+                scopes: ['profile', 'email']
+            }
+            const { type, accessToken, user, idToken} = await Google.logInAsync(config)
+
+            if(type === "success"){
+
+                const {status, data} = await googleLogin(idToken)
+                if(status === 401){
+                    ToastAndroid.showWithGravity(data.errors[0].msg, ToastAndroid.LONG, ToastAndroid.CENTER)
+                    await Google.logOutAsync({accessToken, androidClientId})
+                    return
+                }
+                if(status !== 200) throw new Error(data.errors[0].msg)
+                login({...data, accessToken})
+                navigation.push("app")
+
+            }else{
+                ToastAndroid.showWithGravity("Se canceló el inicio de sesión", ToastAndroid.LONG, ToastAndroid.CENTER)
+            }
+            
+        } catch (error) {
+            ToastAndroid.showWithGravity("Oops! Algo salió mal...", ToastAndroid.LONG, ToastAndroid.CENTER)
+        }
+    }
 
     const formik = useFormik({
         initialValues,
@@ -76,9 +108,11 @@ export default function Login(props) {
                 mode="outlined"
                 style={[formsStyles.btnDefault, formsStyles.btnOutlined]}
                 icon="google"
+                onPress={handleGoogleSignIn}
             >
                 Continuar con Google
             </Button>
+            
 
             <Button
                 mode="outlined"
