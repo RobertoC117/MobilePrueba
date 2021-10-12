@@ -23,6 +23,11 @@ export default function AppNavigation() {
                 options={{title:"Inicio"}}
             />
             <Tab.Screen 
+                name="search" 
+                component={CartStack} 
+                options={{title:"Busqueda"}}
+            />
+            <Tab.Screen 
                 name="cart" 
                 component={CartStack} 
                 options={{title:"Carrito"}}
@@ -41,7 +46,8 @@ const setIcon = (route, routeStatus) =>{
     let icons = {
         home: "home",
         cart: "shopping-cart",
-        account: "user"
+        account: "user",
+        search: "search"
     }
 
     let iconName = icons[route.name]
