@@ -1,6 +1,8 @@
 import React,{useState, useEffect, useMemo} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Provider as PaperProvider, DefaultTheme } from "react-native-paper";
+import { SafeAreaView, View } from 'react-native';
+import Constants from 'expo-constants';
 
 import { TOKEN, ACCESS_TOKEN } from './src/utils/constants';
 import { getToken, removeToken, setToken } from './src/api/token';
@@ -71,7 +73,9 @@ export default function App() {
   return (
     <AuthContext.Provider value={authData}>
       <PaperProvider theme={theme}>
-        <StatusBar statusBarStyle="light-content" backgroundColor="#103F6E" style="light"/>
+        <View style={{paddingTop: Constants.statusBarHeight}}>
+          <StatusBar statusBarStyle="light-content" backgroundColor="#103F6E" style="light" />
+        </View>
           {/* <AuthScreen/> */}
           {/* <AppNavigation/> */}
           <MainNavigation/>
