@@ -3,6 +3,7 @@ import { View, ToastAndroid, Keyboard } from 'react-native'
 import {TextInput, Button, HelperText} from 'react-native-paper'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
+import { useNavigation } from '@react-navigation/native'
 
 import { formsStyles } from '../../styles'
 import { hasErrorOn } from '../../utils/functions'
@@ -11,13 +12,15 @@ import useAuth from '../../hooks/useAuth'
 
 export default function Register(props) {
 
-    const {changeForm, navigation} = props
+    const {changeForm, setLoading} = props
+    const navigation = useNavigation()
     const {login} = useAuth()
 
     const formik = useFormik({
         initialValues,
         validationSchema: Yup.object(schemaValidation()),
         onSubmit: async(formData)=>{
+            setLoading(true)
             try {
                 Keyboard.dismiss()
                 const {status, data} = await register(formData)
@@ -26,6 +29,7 @@ export default function Register(props) {
                 navigation.push("app")
             } catch (error) {
                 ToastAndroid.showWithGravity(error.message, ToastAndroid.LONG, ToastAndroid.CENTER)
+                setLoading(false)
             }
         }
     })
@@ -143,11 +147,12 @@ const initialValues = () =>{
 
 const schemaValidation = () =>{
     const regexPassword = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])([A-Za-z\d$@$!%*?&]|[^ ]){8,20}$/)
+    const regexPhone = new RegExp(/^[+]*[(]?[0-9\s\.]{1,4}[)]?[0-9-\s\.]{10}$/)
     return {
         nombre: Yup.string().min(3, "Nombre muy corto").max(30, "Nombre demasiado largo").required("El nombre es requerido"),
         last_name: Yup.string().min(3, "Apellido muy corto").max(30, "Apellido demasiado largo").required("El apellido es requerido"),
         email: Yup.string().email("No es un email valido").required("El email es requerido"),
         password: Yup.string().matches(regexPassword, "La contraseña debe contener al menos un caracter especial, un numero y una mayuscula"),
-        phone: Yup.string().required("El telefono es requerido"),
+        phone: Yup.string().matches(regexPhone ,"Este no es un numero de telefono valido"),
     }
 }
