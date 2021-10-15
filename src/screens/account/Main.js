@@ -1,17 +1,59 @@
-import React from 'react'
-import { View, StyleSheet, ScrollView } from 'react-native'
-import { Avatar, Button, Title, Caption, List} from 'react-native-paper'
-import { layoutStyles } from '../../styles'
+import React,{useState ,useCallback} from 'react'
+import { View, StyleSheet, ScrollView, Alert, ToastAndroid} from 'react-native'
+import { Avatar, Title, Caption, List} from 'react-native-paper'
+import { useFocusEffect } from '@react-navigation/native'
+
 import useAuth from '../../hooks/useAuth'
 import VisitorView from '../../components/VisitorView'
+import TransparentScreenLoading from '../../components/TransparentScreenLoading'
+import { getUserData } from '../../api/user'
 
 export default function Main(props) {
 
     const {auth, logout} = useAuth()
     const {navigation} = props
 
-    const singOut = () =>{
+    const [user, setUser] = useState(null)
 
+    useFocusEffect(
+        useCallback(()=>{
+            (async()=>{
+                try {
+                    if(auth){
+                        const {status, data} = await getUserData(auth.token)
+                        if(status === 401){
+                            logout()
+                            throw new Error("La sesion expiró")
+                        }
+                        setUser(data)
+                        console.log("Account/Main.js",data)
+                    }
+                } catch (error) {
+                    ToastAndroid.showWithGravity(error.message, ToastAndroid.LONG, ToastAndroid.CENTER)
+                }
+                
+            })()
+        }, [])
+    )
+
+    const singOut = () =>{
+        Alert.alert(
+            "Cerrar sesión",
+            "¿Esta seguro que desea cerrar la sesión?",
+            [
+                {
+                    text:"Si",
+                    onPress:async()=>{
+                        await logout()
+                        navigation.push("login")
+                    }
+                },
+                {
+                    text:"No"
+                }
+            ],
+            {cancelable: false}
+        )
     }
 
     if(!auth){
@@ -21,22 +63,29 @@ export default function Main(props) {
     }
 
     return (
+        <>
         <ScrollView style={{backgroundColor:"white"}}>
-            <View style={styles.container}>
-                <Avatar.Icon size={100} icon="account-circle" style={{backgroundColor:"white", padding:0}}/>
-                <View style={styles.containerInfo}>
-                    <Title style={styles.title}>Roberto Carlos Sánchez Hernández</Title>
-                    <Caption style={styles.caption}>20181133@uthh.edu.mx</Caption>
-                    <Caption style={styles.caption}>+52 7711401696</Caption>
-                </View>
-            </View>
+            {
+                user && (
+                    <View style={styles.container}>
+                        <Avatar.Icon size={80} icon="account-circle" style={{backgroundColor:"white", padding:0}}/>
+                        <View style={styles.containerInfo}>
+                            <Title style={styles.title}>{`${user.name} ${user.last_name}`}</Title>
+                            <Caption style={styles.caption}>{`${user.email}`}</Caption>
+                            {
+                                user.phone && <Caption style={styles.caption}>{`${user.phone}`}</Caption>
+                            }
+                        </View>
+                    </View>
+                ) 
+            }
             <List.Section>
                 <List.Subheader>Mi cuenta</List.Subheader>
                 <List.Item
                     title="Mi informacion"
                     description="Ver y editar mi informacion"
                     left={(props)=> <List.Icon {...props}  icon="face" />}
-                    onPress={()=>console.log("hola")}
+                    onPress={()=>navigation.push('info',{userInfo: user})}
                 />
                 <List.Item
                     title="Mis pedidos"
@@ -48,63 +97,55 @@ export default function Main(props) {
                     title="Administrar direcciones"
                     description="Se muestran las direcciones de envio"
                     left={(props)=> <List.Icon {...props}  icon="map-marker-outline" />}
-                    onPress={()=>console.log("hola")}
+                    onPress={()=>navigation.push('addresses')}
                 />
                 <List.Item
                     title="Metodos de pago"
                     description="Administra tus metodos de pago"
                     left={(props)=> <List.Icon {...props}  icon="wallet-outline" />}
                     onPress={()=>console.log("hola")}
-                />                
-                <List.Item
-                    title="Cambio de contraseña"
-                    description="Solicita cambio de contraseña"
-                    left={(props)=> <List.Icon {...props}  icon="lock-outline" />}
-                    onPress={()=>console.log("hola")}
-                />
+                />   
                 <List.Item
                     title="Favoritos"
                     description="Ver mis productos favoritos"
                     left={(props)=> <List.Icon {...props}  icon="star-outline" />}
                     onPress={()=>console.log("hola")}
-                />
-                <List.Accordion
-                    title="Ayuda"
-                    description="Terminos, preguntas y mas"
-                    style={{backgroundColor:"white"}}
-                    left={(props)=> <List.Icon {...props}  icon="information-outline" />}
-                >
-                    <List.Item title="Preguntas frecuentes" left={(props)=> <List.Icon {...props}  icon="help-circle-outline" />}/>
-                    <List.Item title="Terminos y condiciones" left={(props)=> <List.Icon {...props}  icon="file-document-outline" />}/>
-                </List.Accordion>
+                />  
+                <List.AccordionGroup>
+                    
+                    <List.Accordion
+                        id="1"
+                        title="Seguridad"
+                        style={{backgroundColor:"white"}}
+                        left={(props)=> <List.Icon {...props}  icon="lock-outline" />}
+                    >
+                        <List.Item title="Cambiar contraseña" left={(props)=> <List.Icon {...props}  icon="key" />}/>
+                        <List.Item title="Configurar pregunta secreta" left={(props)=> <List.Icon {...props}  icon="head-question-outline" />}/>
+                    </List.Accordion>  
+
+                    <List.Accordion
+                        id="2"
+                        title="Ayuda"
+                        style={{backgroundColor:"white"}}
+                        left={(props)=> <List.Icon {...props}  icon="information-outline" />}
+                    >
+                        <List.Item title="Preguntas frecuentes" left={(props)=> <List.Icon {...props}  icon="help-circle-outline" />}/>
+                        <List.Item title="Terminos y condiciones" left={(props)=> <List.Icon {...props}  icon="file-document-outline" />}/>
+                    </List.Accordion>
+
+                </List.AccordionGroup>           
                 <List.Item
                     title="Cerrar sesion"
                     description="Finaliza la sesión actual"
                     left={(props)=> <List.Icon {...props}  icon="logout" />}
-                    onPress={()=>console.log("hola")}
+                    onPress={singOut}
                 />
             </List.Section>
-            {/* {
-                !auth ? (
-                    <Button
-                        mode="contained"
-                        onPress={()=> navigation.push("login")}
-                    >
-                        Iniciar sesión
-                    </Button>
-                ):(
-                    <Button
-                        mode="contained"
-                        onPress={async()=>{
-                            await logout()
-                            navigation.push("login")
-                        }}
-                    >
-                        Cerrar sesión
-                    </Button>
-                )
-            } */}
         </ScrollView>
+        {
+            !user && <TransparentScreenLoading text="Cargando datos del usuario ..."/>
+        }
+        </>
     )
 }
 

@@ -18,10 +18,11 @@ export default function App() {
         // await removeToken(TOKEN)
         const token = await getToken(TOKEN)
         const accessToken = await getToken(ACCESS_TOKEN)
+        console.log("Token", token)
         if(token){
           setAuth({
             token,
-            accessToken: accessToken ? accessToken : null
+            accessToken: accessToken || null
           })
         }else{
           setAuth(null)

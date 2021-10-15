@@ -5,17 +5,23 @@ import { Button } from 'react-native-paper';
 import Logo from "../../assets/logoFarmaProntoSm.png";
 import {Login, Register} from '../components/Auth'
 import {layoutStyles, formsStyles} from '../styles'
+import TransparentScreenLoading from '../components/TransparentScreenLoading';
 
 export default function Auth(props) {
     const {navigation} = props
     const [showLogin, setShowLogin] = useState(true)
+    const [loading, setLoading] = useState(false)
     const changeView = () => setShowLogin(!showLogin)
 
     return (
+        <>
+        {
+            loading && <TransparentScreenLoading text="Iniciando Sesión..."/>
+        }
         <View style={layoutStyles.container}>
             <Image style={styles.logo}  source={Logo} />
             {
-                showLogin ? (<Login changeForm={changeView} navigation={navigation} />) : (<Register changeForm={changeView} navigation={navigation} />)
+                showLogin ? (<Login changeForm={changeView} setLoading={setLoading} />) : (<Register changeForm={changeView} setLoading={setLoading} />)
             }
             <Button 
                 mode="text" 
@@ -25,6 +31,7 @@ export default function Auth(props) {
                 Omitir
             </Button>
         </View>
+        </>
     )
 }
 

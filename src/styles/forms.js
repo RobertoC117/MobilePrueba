@@ -19,7 +19,17 @@ const formsStyles = StyleSheet.create({
     },
     smallinput:{
         width:"49%"
-    }
+    },
+    inputPickerWrap:{
+        borderColor:"#7F7F7F",
+        borderWidth:1,
+        borderRadius:15
+    },
+    inputPickerWrapError:{
+        borderRadius:12, 
+        borderWidth:1, 
+        borderColor:"#A00000"
+    },
 })
 
 export default formsStyles

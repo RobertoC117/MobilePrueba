@@ -1,25 +1,28 @@
-import React from 'react'
+import React,{useState} from 'react'
 import { View, ToastAndroid, Keyboard } from 'react-native'
 import { useFormik } from 'formik'
 import {TextInput, Button, HelperText} from 'react-native-paper'
 import * as Yup from 'yup'
 import * as Google from 'expo-google-app-auth';
+import { useNavigation } from '@react-navigation/native'
 
 import { hasErrorOn } from '../../utils/functions'
 import { formsStyles } from '../../styles'
 import {farmaLogin, googleLogin} from '../../api/auth'
 import { androidClientId, } from '../../utils/constants'
+import TransparentScreenLoading from '../TransparentScreenLoading'
 import useAuth from '../../hooks/useAuth'
 
 export default function Login(props) {
 
-    const {changeForm, navigation} = props
+    const {changeForm, setLoading} = props
+    const navigation = useNavigation()
 
     const {login} = useAuth()
 
     const handleGoogleSignIn = async() =>{
         try {
-
+            setLoading(true)
             const config = {
                 androidClientId,
                 scopes: ['profile', 'email']
@@ -29,21 +32,26 @@ export default function Login(props) {
             if(type === "success"){
 
                 const {status, data} = await googleLogin(idToken)
+
                 if(status === 401){
                     ToastAndroid.showWithGravity(data.errors[0].msg, ToastAndroid.LONG, ToastAndroid.CENTER)
                     await Google.logOutAsync({accessToken, androidClientId})
+                    setLoading(false)
                     return
                 }
+
                 if(status !== 200) throw new Error(data.errors[0].msg)
                 login({...data, accessToken})
                 navigation.push("app")
 
             }else{
+                setLoading(false)
                 ToastAndroid.showWithGravity("Se canceló el inicio de sesión", ToastAndroid.LONG, ToastAndroid.CENTER)
             }
             
         } catch (error) {
             ToastAndroid.showWithGravity("Oops! Algo salió mal...", ToastAndroid.LONG, ToastAndroid.CENTER)
+            setLoading(false)
         }
     }
 
@@ -51,6 +59,7 @@ export default function Login(props) {
         initialValues,
         validationSchema: Yup.object(schemaValidation()),
         onSubmit: async(formData)=>{
+            setLoading(true)
             try {
                 Keyboard.dismiss()
                 const {status, data} = await farmaLogin(formData)
@@ -59,6 +68,7 @@ export default function Login(props) {
                 navigation.push("app")
             } catch (error) {
                 ToastAndroid.showWithGravity(error.message, ToastAndroid.SHORT, ToastAndroid.CENTER)
+                setLoading(false)
             }
             
         }
