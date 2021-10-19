@@ -112,16 +112,21 @@ export default function Main(props) {
                     onPress={()=>console.log("hola")}
                 />  
                 <List.AccordionGroup>
+                    {
+                        user && !user.google && (
+                            <List.Accordion
+                                id="1"
+                                title="Seguridad"
+                                style={{backgroundColor:"white"}}
+                                left={(props)=> <List.Icon {...props}  icon="lock-outline" />}
+                            >
+                                <List.Item title="Cambiar contraseña" left={(props)=> <List.Icon {...props}  icon="key" />}/>
+                                <List.Item title="Configurar pregunta secreta" left={(props)=> <List.Icon {...props}  icon="head-question-outline" />}/>
+                            </List.Accordion> 
+                        )
+                    }
                     
-                    <List.Accordion
-                        id="1"
-                        title="Seguridad"
-                        style={{backgroundColor:"white"}}
-                        left={(props)=> <List.Icon {...props}  icon="lock-outline" />}
-                    >
-                        <List.Item title="Cambiar contraseña" left={(props)=> <List.Icon {...props}  icon="key" />}/>
-                        <List.Item title="Configurar pregunta secreta" left={(props)=> <List.Icon {...props}  icon="head-question-outline" />}/>
-                    </List.Accordion>  
+                     
 
                     <List.Accordion
                         id="2"

@@ -1,11 +1,13 @@
 import React,{useState, useEffect, useMemo} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Provider as PaperProvider, DefaultTheme } from "react-native-paper";
-import { SafeAreaView, View } from 'react-native';
+import { SafeAreaView, ToastAndroid, View } from 'react-native';
 import Constants from 'expo-constants';
+import * as Google from 'expo-google-app-auth';
 
 import { TOKEN, ACCESS_TOKEN } from './src/utils/constants';
 import { getToken, removeToken, setToken } from './src/api/token';
+import { androidClientId, } from './src/utils/constants'
 import AuthContext from './src/context/AuthContext'
 import MainNavigation from './src/navigation/MainNavigation';
 
@@ -57,9 +59,16 @@ export default function App() {
   
   const logout = async() => {
     if(auth){
-      setAuth(null)
-      await removeToken(TOKEN)
-      await removeToken(ACCESS_TOKEN)
+      try {
+        if(auth.accessToken){
+          await removeToken(ACCESS_TOKEN)
+          await Google.logOutAsync({accessToken: auth.accessToken, androidClientId})
+        }
+        await removeToken(TOKEN)
+        setAuth(null)
+      } catch (error) {
+        ToastAndroid.showWithGravity("Error al cerrar sesion", ToastAndroid.LONG, ToastAndroid.CENTER)
+      }
     }
   }
 
