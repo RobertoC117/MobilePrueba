@@ -1,11 +1,15 @@
-import React, { useState } from 'react'
-import { View, Text, ScrollView, StyleSheet } from 'react-native'
+import React, { useState, useCallback } from 'react'
+import { View, Text, ScrollView, StyleSheet, RefreshControl } from 'react-native'
 import { Button, FAB } from 'react-native-paper'
+import { useFocusEffect } from '@react-navigation/native'
 
 import AddressIcon from '../../../assets/images/map.png'
 import ListAddresses from '../../components/Addresses/ListAddresses'
+import TransparentScreenLoading from '../../components/TransparentScreenLoading'
 import EmptyList from '../../components/EmptyList'
 import { formsStyles, layoutStyles } from '../../styles'
+import { getAddress, getAddressesList } from '../../api/address'
+import useAuth from '../../hooks/useAuth'
 
 
 export default function ManageAddresses(props) {
@@ -13,22 +17,39 @@ export default function ManageAddresses(props) {
     const {navigation} = props
 
     const [addresses, setAddresses] = useState(null)
+    const [refresh, setRefresh] = useState(false)
+    const {auth} = useAuth()
+
+    const getAddresses = async() =>{
+        try {
+            const {data, status} = await getAddressesList(auth.token)
+            console.log("Se cargaron las direcciones")
+            setAddresses(data.result)
+        } catch (error) {
+            
+        }
+    }
+
+    useFocusEffect(
+        useCallback(()=>{
+            getAddresses()
+        }, [refresh])
+    )
+
+    const reloadList = () => setRefresh(!refresh)
+
+    if(!addresses){
+        return (
+            <TransparentScreenLoading text="Cargando direcciones..." />
+        )
+    }
 
     return (
         <>
         <ScrollView style={styles.container}>
-            {/* <View style={styles.btnAddContainer}>
-                <Button 
-                    mode="contained"
-                    style={[formsStyles.btnDefault,styles.btnAdd]}
-                    icon="plus-circle"
-                >
-                    Agregar
-                </Button>
-            </View> */}
             {
-                addresses ? (
-                    <ListAddresses addresses={addresses}/>
+                addresses && addresses.length > 0 ? (
+                    <ListAddresses addresses={addresses} reloadList={reloadList}/>
                 ):(
                     <EmptyList
                         title="¡Vaya!"
@@ -52,16 +73,6 @@ const styles = StyleSheet.create({
     container:{
         // padding:20,
         backgroundColor: layoutStyles.container.backgroundColor
-    },
-    btnAddContainer:{
-        // backgroundColor:"red",
-        width:"100%",
-        flexDirection:"row",
-        justifyContent:"flex-end"
-    },
-    btnAdd:{
-        width:"40%",
-        marginTop:0
     },
     fab:{
         position:"absolute",

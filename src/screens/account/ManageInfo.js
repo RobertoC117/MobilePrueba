@@ -64,9 +64,10 @@ export default function ManageInfo(props) {
                         value={formik.values.nombre}
                         onChangeText={(value)=>formik.setFieldValue("nombre", value)}
                         disabled={loadig}
+                        error={hasErrorOn(formik, 'nombre')}
                     />
-                    <HelperText type="error" visible={false}>
-                        
+                    <HelperText type="error" visible={hasErrorOn(formik, 'nombre')}>
+                        {formik.errors.nombre}
                     </HelperText>
                 </View>
                 <View>
@@ -77,9 +78,10 @@ export default function ManageInfo(props) {
                         value={formik.values.last_name}
                         onChangeText={(value)=>formik.setFieldValue("last_name", value)}
                         disabled={loadig}
+                        error={hasErrorOn(formik, 'last_name')}
                     />
-                    <HelperText type="error" visible={false}>
-                        
+                    <HelperText type="error" visible={hasErrorOn(formik, 'last_name')}>
+                        {formik.errors.last_name}
                     </HelperText>
                 </View>
                 <View>
