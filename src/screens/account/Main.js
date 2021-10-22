@@ -91,7 +91,7 @@ export default function Main(props) {
                     title="Mis pedidos"
                     description="Se muestran los pedidos realizados"
                     left={(props)=> <List.Icon {...props}  icon="package-variant-closed" />}
-                    onPress={()=>console.log("hola")}
+                    onPress={()=>navigation.push('orders')}
                 />
                 <List.Item
                     title="Administrar direcciones"
@@ -105,12 +105,12 @@ export default function Main(props) {
                     left={(props)=> <List.Icon {...props}  icon="wallet-outline" />}
                     onPress={()=>console.log("hola")}
                 />   
-                <List.Item
+                {/* <List.Item
                     title="Favoritos"
                     description="Ver mis productos favoritos"
                     left={(props)=> <List.Icon {...props}  icon="star-outline" />}
                     onPress={()=>console.log("hola")}
-                />  
+                />   */}
                 <List.AccordionGroup>
                     {
                         user && !user.google && (
@@ -120,7 +120,7 @@ export default function Main(props) {
                                 style={{backgroundColor:"white"}}
                                 left={(props)=> <List.Icon {...props}  icon="lock-outline" />}
                             >
-                                <List.Item title="Cambiar contraseña" left={(props)=> <List.Icon {...props}  icon="key" />}/>
+                                <List.Item title="Cambiar contraseña" onPress={()=>navigation.push('change-password')} left={(props)=> <List.Icon {...props}  icon="key" />}/>
                                 <List.Item title="Configurar pregunta secreta" left={(props)=> <List.Icon {...props}  icon="head-question-outline" />}/>
                             </List.Accordion> 
                         )
