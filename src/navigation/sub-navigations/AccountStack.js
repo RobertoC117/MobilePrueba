@@ -6,6 +6,9 @@ import Main from '../../screens/account/Main'
 import ManageInfo from '../../screens/account/ManageInfo'
 import ManageAddresses from '../../screens/account/ManageAddresses'
 import AddressForm from '../../screens/account/AddressForm'
+import MyOrders from '../../screens/account/MyOrders'
+import ChangePassword from '../../screens/account/ChangePassword'
+import ViewOrderDetail from '../../screens/account/ViewOrderDetail'
 
 const Stack = createStackNavigator()
 
@@ -25,6 +28,9 @@ export default function AccountStack() {
             <Stack.Screen name="info" component={ManageInfo} options={{title:"Editar perfil"}}/>
             <Stack.Screen name="addresses" component={ManageAddresses} options={{title:"Direcciones"}}/>
             <Stack.Screen name="address-form" component={AddressForm} options={{title:"Agregar direccion"}}/>
+            <Stack.Screen name="orders" component={MyOrders} options={{title:"Pedidos"}}/>
+            <Stack.Screen name="order-detail" component={ViewOrderDetail} options={{title:"Detalles del pedido"}}/>
+            <Stack.Screen name="change-password" component={ChangePassword} options={{title:"Cambiar contraseña"}}/>
         </Stack.Navigator>
     )
 }

@@ -39,3 +39,22 @@ export const updateInfo = async(formData, token) =>{
         }
     }
 }
+
+export const updatePassword = async(formData, token) =>{
+    try {
+        const config = {
+            method:'put',
+            url: `${API_URL}/user/edit/password`,
+            headers:{ "Content-Type": "application/json", token },
+            data: JSON.stringify(formData)
+        }
+        const {status, data} = await axios(config)
+        return{ status, data }
+    } catch (error) {
+        console.log("error", error.response.data)
+        return {
+            status: error.response.status,
+            data: error.response.data
+        }
+    }
+}
