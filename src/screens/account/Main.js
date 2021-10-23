@@ -110,35 +110,36 @@ export default function Main(props) {
                     description="Ver mis productos favoritos"
                     left={(props)=> <List.Icon {...props}  icon="star-outline" />}
                     onPress={()=>console.log("hola")}
-                />   */}
-                <List.AccordionGroup>
-                    {
-                        user && !user.google && (
-                            <List.Accordion
-                                id="1"
-                                title="Seguridad"
-                                style={{backgroundColor:"white"}}
-                                left={(props)=> <List.Icon {...props}  icon="lock-outline" />}
-                            >
-                                <List.Item title="Cambiar contraseña" onPress={()=>navigation.push('change-password')} left={(props)=> <List.Icon {...props}  icon="key" />}/>
-                                <List.Item title="Configurar pregunta secreta" left={(props)=> <List.Icon {...props}  icon="head-question-outline" />}/>
-                            </List.Accordion> 
-                        )
-                    }
-                    
-                     
-
-                    <List.Accordion
-                        id="2"
-                        title="Ayuda"
-                        style={{backgroundColor:"white"}}
-                        left={(props)=> <List.Icon {...props}  icon="information-outline" />}
-                    >
-                        <List.Item title="Preguntas frecuentes" left={(props)=> <List.Icon {...props}  icon="help-circle-outline" />}/>
-                        <List.Item title="Terminos y condiciones" left={(props)=> <List.Icon {...props}  icon="file-document-outline" />}/>
-                    </List.Accordion>
-
-                </List.AccordionGroup>           
+                /> */}
+                {
+                    user && !user.google && (
+                        <>
+                        <List.Item 
+                            title="Cambiar contraseña" 
+                            description="Edita tu contraseña"
+                            onPress={()=>navigation.push('change-password')} 
+                            left={(props)=> <List.Icon {...props}  icon="key" />}
+                        />
+                        <List.Item 
+                            title="Configurar pregunta secreta"
+                            description="Edita la pregunta secreta y la respuesta" 
+                            onPress={()=>navigation.push('handle-question',{pregunta: user.question})}
+                            left={(props)=> <List.Icon {...props} icon="head-question-outline" />}
+                        />
+                        </>
+                    )
+                } 
+                <List.Item 
+                    title="Preguntas frecuentes"
+                    description="Aclara tus dudas" 
+                    onPress={()=>navigation.push('preguntas')} 
+                    left={(props)=> <List.Icon {...props}  icon="help-circle-outline" />}
+                />
+                <List.Item 
+                    title="Terminos y condiciones"
+                    description="Conoce más"
+                    left={(props)=> <List.Icon {...props}  icon="file-document-outline" />}
+                />
                 <List.Item
                     title="Cerrar sesion"
                     description="Finaliza la sesión actual"
