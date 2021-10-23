@@ -10,6 +10,7 @@ import MyOrders from '../../screens/account/MyOrders'
 import ChangePassword from '../../screens/account/ChangePassword'
 import ViewOrderDetail from '../../screens/account/ViewOrderDetail'
 import ManageQuestion from '../../screens/account/ManageQuestion'
+import FQA from '../../screens/account/FQA'
 
 const Stack = createStackNavigator()
 
@@ -33,6 +34,7 @@ export default function AccountStack() {
             <Stack.Screen name="order-detail" component={ViewOrderDetail} options={{title:"Detalles del pedido"}}/>
             <Stack.Screen name="change-password" component={ChangePassword} options={{title:"Cambiar contraseña"}}/>
             <Stack.Screen name="handle-question" component={ManageQuestion} options={{title:"Pregunta secreta"}}/>
+            <Stack.Screen name="preguntas" component={FQA} options={{title:"Preguntas Frecuentes"}}/>
         </Stack.Navigator>
     )
 }
