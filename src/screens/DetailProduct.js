@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useEffect, useState} from 'react'
 import { View, Text, ScrollView, StyleSheet } from 'react-native'
 import { Button, Caption, Paragraph, Title, TextInput} from 'react-native-paper'
 import {Picker} from "@react-native-community/picker"
@@ -6,21 +6,56 @@ import {Picker} from "@react-native-community/picker"
 import Interest from '../components/Product/Interest'
 import Slider from '../components/Product/Slider'
 import { formsStyles } from '../styles'
+import { getProduct } from '../api/product'
+import TransparentScreenLoading from '../components/TransparentScreenLoading'
+import { priceWithDiscount } from '../utils/functions'
+export default function DetailProduct(props) {
 
-export default function DetailProduct() {
+    const{route:{params:{idProduct}}} = props
+
+    const [product, setProduct] = useState(null)
+    const [cantidad, setCantidad] = useState(1)
+
+    useEffect(()=>{
+        (async()=>{
+            let {data} = await getProduct(idProduct)
+            let imagenes = [{url: data.result.main_img}]
+            imagenes.push(...data.result.detail_img)
+            setProduct({...data.result, imagenes})
+        })()
+    }, [])
+
+    if(!product){
+        return (<TransparentScreenLoading text="Cargando producto..." />)
+    }
+
     return (
         <ScrollView>
-            <Slider/>
+            <Slider imagenes={product.imagenes}/>
             <View style={style.container}>
                 <View style={style.containerInfo}>
-                    <Title>Nombre del producto bla bhahab bka ff f fffffff ffffffff</Title>
-                    <Caption style={style.caption}>Marca</Caption>
-                    <Title>$24</Title>
+                    <Title>{product.title}</Title>
+                    <Caption style={style.caption}>{product.brand}</Caption>
+                    <View style={style.priceContainer}>
+                    {
+                        !product.discount ? (
+                            <Title style={style.price}>${product.price}</Title>
+                        ):(
+                            <>
+                                <Title style={style.oldPrice}>${product.price}</Title>
+                                <Title style={style.price}>${priceWithDiscount(product.price, product.discount)}</Title>
+                            </>
+                        )
+                    }
+                    </View>
                 </View>
                 <View style={style.controlsContainer}>
                     <View style={style.containerInput}>
                         <View style={formsStyles.inputPickerWrap}>
-                            <Picker style={formsStyles.textInput}>
+                            <Picker style={formsStyles.textInput}
+                                selectedValue={cantidad}
+                                onValueChange={value => setCantidad(value)}
+                            >
                                 <Picker.Item label="1" value={1} />
                                 <Picker.Item label="2" value={2} />
                                 <Picker.Item label="3" value={3} />
@@ -33,19 +68,26 @@ export default function DetailProduct() {
                     <View style={style.containerInput}>
                         <Button
                             mode="contained"
-                            style={formsStyles.btnDefault}
+                            style={style.addButton}
                             labelStyle={style.labelStyle}
                             >
-                            Agregar al carrito
+                            Agregar a la cesta
                         </Button>
                     </View>      
                 </View>
             
                 <Title>Descripcion</Title>
-                <Paragraph>
-                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                <Paragraph style={style.description}>
+                    {
+                        product.description ? 
+                            product.description 
+                        : (
+                            <Caption style={style.descriptionCaption}>No hay descripcion</Caption>
+                        )
+                    }
+                    {/* Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. */}
                 </Paragraph>
-                <Interest/>
+                <Interest category={product.category}/>
             </View>
         </ScrollView>
     )
@@ -54,6 +96,10 @@ export default function DetailProduct() {
 const style = StyleSheet.create({
     container:{
         padding:15
+    },
+    addButton:{
+        height:55,
+        justifyContent:"center",
     },
     containerInfo:{
         marginBottom:10
@@ -70,13 +116,24 @@ const style = StyleSheet.create({
         width:"49%",
     },
     labelStyle:{
-        fontSize:11
+        fontSize:12,
     },
     price:{
-        color:"green"
+        color:"green",
+        marginEnd:10
     },
     oldPrice:{
         color:"red",
         textDecorationLine:"line-through",
+        marginEnd:10
     },
+    priceContainer:{
+        flexDirection:"row",
+    },
+    description:{
+        marginBottom:20
+    },
+    descriptionCaption:{
+        fontSize:16
+    }
 })

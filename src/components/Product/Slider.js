@@ -6,14 +6,16 @@ import Imagen from '../../../assets/images/clipboard.png'
 const width = Dimensions.get("window").width
 const height = 300;
 
-export default function Slider() {
+export default function Slider(props) {
+
+    const {imagenes} = props
 
     const [sliderItems, setSliderItems] = useState([1,2,3])
     const [indexActive, setIndexActive] = useState(0)
 
     const renderSlider = ({item}) =>{
         return(
-            <Image style={styles.carousel} source={Imagen} />
+            <Image style={styles.carousel} source={{uri:item.url}} />
         )
     }
 
@@ -25,12 +27,12 @@ export default function Slider() {
                 sliderWidth={width}
                 itemWidth={width}
                 layout="default"
-                data={sliderItems}
+                data={imagenes}
                 renderItem={renderSlider}
                 onSnapToItem={(index)=>setIndexActive(index)}
             />
             <Pagination
-                dotsLength={sliderItems.length} 
+                dotsLength={imagenes.length} 
                 activeDotIndex={indexActive}
                 inactiveDotOpacity={0.4}
                 inactiveDotScale={0.6}

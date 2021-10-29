@@ -1,9 +1,10 @@
 import React,{useEffect, useState} from 'react'
-import { View, Text, StyleSheet, TouchableNativeFeedback} from 'react-native'
+import { View, Text, StyleSheet, TouchableNativeFeedback, TouchableWithoutFeedback} from 'react-native'
 import { Card, Title, Paragraph, Caption} from 'react-native-paper'
 import { useNavigation } from '@react-navigation/core'
 import { getMainProducts } from '../../api/product'
 import { priceWithDiscount } from '../../utils/functions'
+import VerticalProductItem from '../Product/VerticalProductItem'
 
 
 export default function MainProductos(props) {
@@ -26,8 +27,11 @@ export default function MainProductos(props) {
                 {
                     products && (
                         products.map(item => (
-                            <TouchableNativeFeedback key={item.id} onPress={()=>navigation.push('detail')}>
-                                <Card style={styles.items}>
+                            <TouchableWithoutFeedback key={item.id} onPress={()=>navigation.push('detail',{idProduct: item.id})}>
+                                <View style={styles.items}>
+                                    <VerticalProductItem product={item} />
+                                </View>
+                                {/* <Card style={styles.items}>
                                     <Card.Cover style={{
                                         width: "100%",
                                         height:100,
@@ -49,8 +53,8 @@ export default function MainProductos(props) {
                                             }
                                         </View>
                                     </Card.Content>
-                                </Card>
-                            </TouchableNativeFeedback>
+                                </Card> */}
+                            </TouchableWithoutFeedback>
                         ))
                     )
                 }
@@ -74,20 +78,7 @@ const styles = StyleSheet.create({
         // height:180,
         marginTop:10
     },
-    price:{
-        fontWeight:"bold",
-        color:"green",
-        marginEnd:5
-    },
     title:{
         paddingStart:15
-    },
-    oldPrice:{
-        textDecorationLine:"line-through",
-        color:"red",
-        marginEnd:5
-    },
-    newPrice:{
-
     }
 })
