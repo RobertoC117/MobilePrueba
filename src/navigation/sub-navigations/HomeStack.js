@@ -7,6 +7,7 @@ import Logo from '../../../assets/logoFarmaProntoSmWhite.png'
 import Main from '../../screens/home/Main'
 import CategoriesList from '../../screens/home/CategoriesList'
 import DetailProduct from '../../screens/DetailProduct'
+import BrandList from '../../screens/home/BrandList'
 
 const Stack = createStackNavigator()
 
@@ -30,6 +31,7 @@ export default function HomeStack() {
         <Stack.Navigator screenOptions={options}>
             <Stack.Screen name="main-home" component={Main} options={{headerLeft: null}} />
             <Stack.Screen name="categories" component={CategoriesList} options={{headerTitle:"Categorias"}} />
+            <Stack.Screen name="brands" component={BrandList} options={{headerTitle:"Marcas"}} />
             <Stack.Screen name="detail" component={DetailProduct} options={{headerTitle:"Detalles del producto"}} />
         </Stack.Navigator>
     )

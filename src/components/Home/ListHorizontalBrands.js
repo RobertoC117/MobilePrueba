@@ -1,75 +1,47 @@
-import React from 'react'
+import React,{useEffect, useState} from 'react'
 import { View, Text, ScrollView, StyleSheet, TouchableNativeFeedback, TouchableOpacity } from 'react-native'
 import { Avatar, Surface, Subheading, Title } from 'react-native-paper'
-import Imagen from '../../../assets/images/clipboard.png'
+import { useNavigation } from '@react-navigation/core'
+import { getBrands } from '../../api/brands'
 
 export default function ListHorizontalBrands() {
+
+    const [brands, setBrands] = useState(null)
+    const [fullBrands, setFullBrands] = useState(null)
+    const navigation = useNavigation()
+
+    useEffect(()=>{
+        (async()=>{
+            let {data} = await getBrands()
+            setBrands(data.result.slice(0,4))
+            setFullBrands(data.result)
+        })()
+    }, [])
+
     return (
         <View>
             <Title style={styles.titulo}>Marcas</Title>
             <ScrollView horizontal={true} style={styles.containerScroll} showsHorizontalScrollIndicator={false}>
 
-                <TouchableNativeFeedback onPress={()=>console.log("Hola")}>
-                    <Surface style={styles.card}>
-                        <Avatar.Image
-                            source={Imagen}
-                            size={50}
-                        />
-                        <Subheading numberOfLines={2} style={{textAlign:"center"}} >
-                            Nombre de la marca jajajjajaa
-                        </Subheading>
-                    </Surface>
-                </TouchableNativeFeedback>
+                {
+                    brands && (
+                        brands.map(item => (
+                            <TouchableNativeFeedback key={item.id} onPress={()=>console.log("Hola")}>
+                                <Surface style={styles.card}>
+                                    <Avatar.Image
+                                        source={{uri:item.img_url}}
+                                        size={50}
+                                    />
+                                    <Subheading numberOfLines={2} style={{textAlign:"center"}} >
+                                        {item.name}
+                                    </Subheading>
+                                </Surface>
+                            </TouchableNativeFeedback>
+                        ))
+                    )
+                }
 
-                <TouchableNativeFeedback onPress={()=>console.log("Hola")}>
-                    <Surface style={styles.card}>
-                        <Avatar.Image
-                            source={Imagen}
-                            size={50}
-                        />
-                        <Subheading numberOfLines={2} style={{textAlign:"center"}} >
-                            Nombre de la marca jajajjajaa
-                        </Subheading>
-                    </Surface>
-                </TouchableNativeFeedback>
-
-                <TouchableNativeFeedback onPress={()=>console.log("Hola")}>
-                    <Surface style={styles.card}>
-                        <Avatar.Image
-                            source={Imagen}
-                            size={50}
-                        />
-                        <Subheading numberOfLines={2} style={{textAlign:"center"}} >
-                            Nombre de la marca jajajjajaa
-                        </Subheading>
-                    </Surface>
-                </TouchableNativeFeedback>
-
-                <TouchableNativeFeedback onPress={()=>console.log("Hola")}>
-                    <Surface style={styles.card}>
-                        <Avatar.Image
-                            source={Imagen}
-                            size={50}
-                        />
-                        <Subheading numberOfLines={2} style={{textAlign:"center"}} >
-                            Nombre de la marca jajajjajaa
-                        </Subheading>
-                    </Surface>
-                </TouchableNativeFeedback>
-
-                <TouchableNativeFeedback onPress={()=>console.log("Hola")}>
-                    <Surface style={styles.card}>
-                        <Avatar.Image
-                            source={Imagen}
-                            size={50}
-                        />
-                        <Subheading numberOfLines={2} style={{textAlign:"center"}} >
-                            Nombre de la marca jajajjajaa
-                        </Subheading>
-                    </Surface>
-                </TouchableNativeFeedback>
-
-                <TouchableNativeFeedback onPress={()=>console.log("Hola")}>
+                <TouchableNativeFeedback onPress={()=>navigation.push("brands")}>
                     <Surface style={styles.card}>
                         <Subheading numberOfLines={2} style={{textAlign:"center"}} >
                             VER MAS

@@ -1,21 +1,31 @@
-import React,{useState} from 'react'
+import React,{useState, useEffect} from 'react'
 import { View, StyleSheet, Dimensions, Image } from 'react-native'
 import Carousel,{Pagination} from 'react-native-snap-carousel'
 import Imagen from '../../../assets/images/clipboard.png'
+import { getCarouselImgs } from '../../api/slider'
 
 const width = Dimensions.get("window").width
 const height = 190;
 
 export default function Slider() {
 
-    const [sliderItems, setSliderItems] = useState([1,2,3])
     const [indexActive, setIndexActive] = useState(0)
+    const [slider, setSlider] = useState(null)
+
+    useEffect(()=>{
+        (async()=>{
+            const {data} = await getCarouselImgs()
+            setSlider(data.result)
+        })()
+    }, [])
 
     const renderSlider = ({item}) =>{
         return(
-            <Image style={styles.carousel} source={Imagen} />
+            <Image style={styles.carousel} source={{uri: item.img_url}} />
         )
     }
+
+    if(!slider) return null
 
     return (
         <View style={styles.container}>
@@ -28,12 +38,12 @@ export default function Slider() {
                 sliderWidth={width}
                 itemWidth={width}
                 layout="default"
-                data={sliderItems}
+                data={slider}
                 renderItem={renderSlider}
                 onSnapToItem={(index)=>setIndexActive(index)}
             />
             <Pagination
-                dotsLength={sliderItems.length} 
+                dotsLength={slider.length} 
                 activeDotIndex={indexActive}
                 inactiveDotOpacity={0.4}
                 inactiveDotScale={0.6}
