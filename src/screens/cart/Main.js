@@ -1,11 +1,22 @@
 import React from 'react'
-import { View, Text } from 'react-native'
-import { layoutStyles } from '../../styles'
+import { ScrollView } from 'react-native'
+import CartList from '../../components/Cart/CartList'
+import EmptyList from '../../components/EmptyList'
+import Basket from '../../../assets/images/basket.png'
+
 
 export default function Main() {
     return (
-        <View style={layoutStyles.container}>
-            <Text>CART</Text>
-        </View>
+        <>
+            <ScrollView>
+                <CartList/> 
+                
+            </ScrollView>
+            {/* <EmptyList
+                    title="Tu cesta esta vacia"
+                    message="Busca algunos productos y añadelos a la cesta"
+                    imagen={Basket}
+            /> */}
+        </>
     )
 }
