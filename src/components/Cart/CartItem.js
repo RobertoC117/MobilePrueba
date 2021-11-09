@@ -1,20 +1,26 @@
 import React from 'react'
 import { View, Text, Image, StyleSheet, Button, TextInput, TouchableNativeFeedback, Alert} from 'react-native'
-import { Title, IconButton, Button as BtnPaper} from 'react-native-paper'
+import { Title, IconButton, Caption} from 'react-native-paper'
 import { colors } from '../../styles/colors'
 import useQuantity from '../../hooks/useQuantity'
+import {removeFromCart, updateProductQuantity} from '../../api/cart'
+import { priceWithDiscount } from '../../utils/functions'
 
-export default function CartItem() {
+export default function CartItem({producto , reloadCart}) {
 
-    const {quantity, increase, decrease} = useQuantity()
+    const {quantity, increase, decrease} = useQuantity(producto.quantity)
 
-    const eliminar = () =>{
+    const eliminar = (id) =>{
         Alert.alert(
             "Eliminar producto",
             "¿Desea eliminar este producto de su carrito?",
             [
                 {
                     text:"Si",
+                    onPress:async()=>{
+                        await removeFromCart(id)
+                        reloadCart()
+                    }
                 },
                 {
                     text:"No"
@@ -24,43 +30,62 @@ export default function CartItem() {
         )
     }
 
-    const disminuirCantidad = () =>{
+    const disminuirCantidad = async(id) =>{
         if(quantity === 1){
-            eliminar()
+            eliminar(id)
         }else{
             decrease()
+            await updateProductQuantity({id, quantity: quantity-1})
+            console.log(producto.quantity)
         }
     }
 
+    const aumentarCantidad = async(id) =>{
+        increase()
+        await updateProductQuantity({id, quantity: quantity+1})
+        console.log(producto.quantity)
+    }
+
     return (
-        <TouchableNativeFeedback onPress={()=>console.log("Hola")}>
+        <View key={producto.id}>
             <View style={styles.container}>
                 <View style={styles.conatinerImg}>
-                    <Image style={styles.imagen} source={{ uri: 'https://picsum.photos/700' }} />
+                    <Image style={styles.imagen} source={{ uri: producto.main_img }} />
                 </View>
                 <View style={styles.containerInfo}>
                     <Title style={styles.title} numberOfLines={2}>
-                        Nombre completo del productoNombre completo del producto
+                        {producto.title}
                     </Title>
+                    <Caption>
+                        {producto.brand}
+                    </Caption>
                     <View style={{flexDirection:"row"}}>
-                        <Text style={styles.oldPrice}>$20</Text>
-                        <Text style={styles.price}>$20</Text>
+                        {
+                            !producto.discount ? (
+                                <Text style={styles.price}>${producto.price}</Text>
+                            ):(
+                                <>
+                                    <Text style={styles.oldPrice}>${producto.price}</Text>
+                                    <Text style={styles.price}>${priceWithDiscount(producto.price, producto.discount)}</Text>
+                                </>
+                            )
+                        }
                     </View>
                     
                     <View style={styles.quantityControls}>
-                        <Button title="  -  " onPress={disminuirCantidad} color={colors.primary}/>
+                        <Button title="  -  " onPress={()=>disminuirCantidad(producto.id)} color={colors.primary}/>
                         <TextInput value={quantity.toString()} style={styles.txtCantidad} editable={false} />
-                        <Button title="  +  " onPress={increase} color={colors.primary}/>
+                        <Button title="  +  " onPress={()=>aumentarCantidad(producto.id)} color={colors.primary}/>
                     </View>
                 </View> 
                 <IconButton
                     icon="delete"
                     color="red"
                     size={25}
-                    onPress={() => eliminar()}
+                    onPress={() => eliminar(producto.id)}
                 />
             </View>
-        </TouchableNativeFeedback>
+        </View>
     )
 }
 

@@ -1,20 +1,27 @@
 import React,{useEffect, useState} from 'react'
-import { View, Text, ScrollView, StyleSheet } from 'react-native'
+import { View, Text, ScrollView, StyleSheet, ToastAndroid } from 'react-native'
 import { Button, Caption, Paragraph, Title, TextInput} from 'react-native-paper'
 import {Picker} from "@react-native-community/picker"
+import {useNavigation} from '@react-navigation/native'
 
 import Interest from '../components/Product/Interest'
 import Slider from '../components/Product/Slider'
 import { formsStyles } from '../styles'
 import { getProduct } from '../api/product'
+import {addToCart} from '../api/cart'
 import TransparentScreenLoading from '../components/TransparentScreenLoading'
 import { priceWithDiscount } from '../utils/functions'
+
 export default function DetailProduct(props) {
 
     const{route:{params:{idProduct}}} = props
 
     const [product, setProduct] = useState(null)
     const [cantidad, setCantidad] = useState(1)
+
+    console.log(props.route)
+
+    const navigation = useNavigation()
 
     useEffect(()=>{
         (async()=>{
@@ -28,6 +35,16 @@ export default function DetailProduct(props) {
     if(!product){
         return (<TransparentScreenLoading text="Cargando producto..." />)
     }
+
+    const addProduct = async(datos) =>{
+        let status = await addToCart(datos)
+        if(status){
+            navigation.navigate('cart')
+            // ToastAndroid.showWithGravity("Producto añadido al carrito", ToastAndroid.LONG, ToastAndroid.CENTER)
+        }else{
+            ToastAndroid.showWithGravity("Opps! Algo salio mal", ToastAndroid.LONG, ToastAndroid.CENTER)
+        }
+    }   
 
     return (
         <ScrollView>
@@ -70,7 +87,11 @@ export default function DetailProduct(props) {
                             mode="contained"
                             style={style.addButton}
                             labelStyle={style.labelStyle}
-                            >
+                            onPress={()=> addProduct({
+                                id: product.id,
+                                quantity: cantidad
+                            })}
+                        >
                             Agregar a la cesta
                         </Button>
                     </View>      
