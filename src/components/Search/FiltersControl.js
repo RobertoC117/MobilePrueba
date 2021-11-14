@@ -6,8 +6,6 @@ export default function FiltersControl({filter, setFilter}) {
 
     const [visible, setVisible] = useState(false)
 
-    console.log(filter)
-
     const openMenu = () => setVisible(true);
 
     const closeMenu = () => setVisible(false);

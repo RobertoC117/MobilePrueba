@@ -1,17 +1,31 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableNativeFeedback } from 'react-native'
 import { IconButton } from 'react-native-paper'
+import { deleteItem } from '../../api/history'
+import { useNavigation } from '@react-navigation/core'
 
 export default function HistoryItem(props) {
-    const {text, index} = props
+
+    const {text, index, update} = props
+    const navigation = useNavigation()
+
+    const deleteWord = async() =>{
+       await deleteItem(index)
+       update()
+    }
+
+    const search = () =>{
+        navigation.push("search",{busqueda: text})
+    }
+
     return (
         <View style={styles.container}>
-            <TouchableNativeFeedback onPress={()=>console.log("Hola")}>
+            <TouchableNativeFeedback onPress={search}>
                 <View style={styles.label}>
-                    <Text>Busqueda</Text>
+                    <Text>{text}</Text>
                 </View>
             </TouchableNativeFeedback>
-            <IconButton icon="close" size={25} color="#A0A0A0" onPress={()=>console.log("eliminado")} />
+            <IconButton icon="close" size={25} color="#A0A0A0" onPress={deleteWord} />
         </View>
     )
 }

@@ -2,6 +2,7 @@ import React,{useState} from 'react'
 import { View, StyleSheet, TouchableNativeFeedback } from 'react-native'
 import { Searchbar } from 'react-native-paper'
 import AwesomeIcons from 'react-native-vector-icons/FontAwesome'
+import { addItem } from '../api/history'
 
 export default function Header(props) {
 
@@ -18,9 +19,9 @@ export default function Header(props) {
         navigation.push("history")
     }
 
-    const search = () =>{
+    const search = async() =>{
         if(query === "") return
-        console.log("Realizando busqueda")
+        await addItem(query)
         navigation.push("search",{busqueda: query})
     }
 

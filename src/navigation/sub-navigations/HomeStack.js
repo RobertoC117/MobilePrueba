@@ -50,12 +50,12 @@ export default function HomeStack() {
 
     return (
         <Stack.Navigator screenOptions={options}>
-            <Stack.Screen name="search" component={Results} />
-            <Stack.Screen name="main-home" component={Main} options={{headerLeft: null, headerTitle:()=> MainScreenSearchbar()}} />
+            <Stack.Screen name="main-home" component={Main} />
             <Stack.Screen name="categories" component={CategoriesList} options={{headerTitle:"Categorias"}} />
             <Stack.Screen name="brands" component={BrandList} options={{headerTitle:"Marcas"}} />
             <Stack.Screen name="detail" component={DetailProduct} options={{headerTitle:"Detalles del producto"}} />
             <Stack.Screen name="history" component={MainSearch} />
+            <Stack.Screen name="search" component={Results} />
         </Stack.Navigator>
     )
 }
