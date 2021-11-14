@@ -89,7 +89,8 @@ export default function DetailProduct(props) {
                             labelStyle={style.labelStyle}
                             onPress={()=> addProduct({
                                 id: product.id,
-                                quantity: cantidad
+                                quantity: cantidad,
+                                price: priceWithDiscount(product.price, product.discount)
                             })}
                         >
                             Agregar a la cesta

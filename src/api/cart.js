@@ -1,5 +1,4 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import axios from 'axios'
 import { CART } from '../utils/constants'
 import { getProduct } from './product'
 
@@ -13,7 +12,7 @@ export const getCart = async() =>{
     }
 }
 
-export const addToCart = async({id, quantity}) =>{
+export const addToCart = async({id, quantity, price}) =>{
     try {
         let cart = await getCart();
 
@@ -21,10 +20,14 @@ export const addToCart = async({id, quantity}) =>{
 
         let exist = cart.hasOwnProperty(id)
 
-        if(exist)
+        if(exist){
             cart[id].quantity += quantity
-        else
-            cart[id] = {quantity}
+            cart[id].price = price
+            cart[id].subtotal = quantity * price
+        }
+        else{
+            cart[id] = {quantity, price, subtotal: price*quantity}
+        }
 
         await AsyncStorage.setItem(CART, JSON.stringify(cart))
 
@@ -55,6 +58,7 @@ export const updateProductQuantity = async({id, quantity}) =>{
     try {
         const cart = await getCart()
         cart[id].quantity = quantity
+        cart[id].subtotal = quantity * cart[id].price
         await AsyncStorage.setItem(CART, JSON.stringify(cart))
         console.log(cart)
         return true
@@ -64,7 +68,12 @@ export const updateProductQuantity = async({id, quantity}) =>{
 }
 
 export const deteleCart = async() =>{
-
+    try {
+        await AsyncStorage.removeItem(CART)
+        return true
+    } catch (error) {
+        return false
+    }
 }
 
 export const getProductsFromServer = async() =>{
@@ -75,6 +84,7 @@ export const getProductsFromServer = async() =>{
         const products = await Promise.all(keys.map(id => getProduct(id)))
         products.forEach(function(item){
             item.data.result.quantity = cart[item.data.result.id].quantity
+            item.data.result.subtotal = cart[item.data.result.id].subtotal
         })
         // console.log(products)
         return products
@@ -84,3 +94,18 @@ export const getProductsFromServer = async() =>{
     }
 }
 
+export const getTotal = async() =>{
+    try {
+        const cart = await getCart()
+        let subtotal = 0;
+        console.log("CARRITO",cart)
+        for (const key in cart) {
+            subtotal += cart[key].subtotal
+        }
+        console.log("Subtotal: ", subtotal)
+        return subtotal
+    } catch (error) {
+        console.log(error)
+        return null
+    }
+}

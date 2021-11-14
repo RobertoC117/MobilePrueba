@@ -6,7 +6,7 @@ import useQuantity from '../../hooks/useQuantity'
 import {removeFromCart, updateProductQuantity} from '../../api/cart'
 import { priceWithDiscount } from '../../utils/functions'
 
-export default function CartItem({producto , reloadCart}) {
+export default function CartItem({producto , reloadCart, updateTotal}) {
 
     const {quantity, increase, decrease} = useQuantity(producto.quantity)
 
@@ -18,6 +18,7 @@ export default function CartItem({producto , reloadCart}) {
                 {
                     text:"Si",
                     onPress:async()=>{
+                        updateTotal(-priceWithDiscount(producto.price, producto.discount))
                         await removeFromCart(id)
                         reloadCart()
                     }
@@ -36,12 +37,15 @@ export default function CartItem({producto , reloadCart}) {
         }else{
             decrease()
             await updateProductQuantity({id, quantity: quantity-1})
+            updateTotal(-priceWithDiscount(producto.price, producto.discount))
             console.log(producto.quantity)
         }
+
     }
 
     const aumentarCantidad = async(id) =>{
         increase()
+        updateTotal(priceWithDiscount(producto.price, producto.discount))
         await updateProductQuantity({id, quantity: quantity+1})
         console.log(producto.quantity)
     }

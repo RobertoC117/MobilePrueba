@@ -6,6 +6,7 @@ import AwesomeIcons from 'react-native-vector-icons/FontAwesome'
 import HomeStack from './sub-navigations/HomeStack';
 import AccountStack from './sub-navigations/AccountStack';
 import CartStack from './sub-navigations/CartStack';
+import SearchStack from './sub-navigations/SearchStack';
 
 const Tab = createMaterialBottomTabNavigator()
 
@@ -24,7 +25,7 @@ export default function AppNavigation() {
             />
             <Tab.Screen 
                 name="search" 
-                component={CartStack} 
+                component={SearchStack} 
                 options={{title:"Busqueda"}}
             />
             <Tab.Screen 
