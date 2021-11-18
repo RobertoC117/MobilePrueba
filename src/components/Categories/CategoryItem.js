@@ -2,10 +2,12 @@ import React from 'react'
 import { View, Text, StyleSheet, TouchableNativeFeedback } from 'react-native'
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome5'
 import { Avatar, Subheading, Surface } from 'react-native-paper'
+import { useNavigation } from '@react-navigation/core'
 
 export default function CategoryItem(props) {
 
     const {text, icon} = props
+    const navigation = useNavigation()
 
     const getIcon = (name) => {
         const icons = {
@@ -27,7 +29,7 @@ export default function CategoryItem(props) {
     }
 
     return (
-        <TouchableNativeFeedback onPress={()=>console.log("Hola")}>
+        <TouchableNativeFeedback onPress={()=>navigation.push("search",{busqueda: text, filtro:"categoria"})}>
             <Surface style={styles.container}>
                 {/* <Avatar.Icon source={{ uri: 'https://picsum.photos/700' }} size={50} /> */}
                 <AwesomeIcon name={getIcon(text)} style={styles.icon} color="#103F6E" size={25} />

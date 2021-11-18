@@ -3,28 +3,41 @@ import { View, Text, StyleSheet } from 'react-native'
 import { Button } from 'react-native-paper'
 import { colors } from '../../styles/colors'
 
-export default function Pagination() {
+export default function Pagination({next, previous, updateUrl}) {
+
+    const goTo = (url) =>{
+        updateUrl(url)
+    }
+
     return (
-        <View style={[styles.containerControls, styles.onlyNext]}>
+        <View style={[styles.containerControls, next ? styles.onlyNext : styles.onlyBack]}>
+            {
+                previous && (
+                    <View style={styles.containerButton}>
+                        <Button
+                            mode="outlined"
+                            style={[styles.btnDesing, styles.btnBack]}
+                            onPress={()=>goTo(previous)}
+                        >
+                            Anterior
+                        </Button>
+                    </View>
+                )
+            }
 
-            <View style={styles.containerButton}>
-                <Button
-                    mode="outlined"
-                    style={[styles.btnDesing, styles.btnBack]}
-                >
-                    Anterior
-                </Button>
-            </View>
-
-            <View style={styles.containerButton}>
-                <Button
-                    mode="contained"
-                    style={[styles.btnDesing]}
-                >
-                    Siguiente
-                </Button>
-            </View>
-
+            {
+                next && (
+                    <View style={styles.containerButton}>
+                        <Button
+                            mode="contained"
+                            style={[styles.btnDesing]}
+                            onPress={()=>goTo(next)}
+                        >
+                            Siguiente
+                        </Button>
+                    </View>
+                )
+            }
         </View>
     )
 }

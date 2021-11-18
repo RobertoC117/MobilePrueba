@@ -62,7 +62,7 @@ export default function Main() {
                                 />
                             </ScrollView>
                             <View style={ styles.btnComprar}>
-                                <Title>Total: ${total}</Title>
+                                <Title>Total: ${total.toFixed(2)}</Title>
                                 <Button
                                     mode="contained"
                                     style={formsStyles.btnDefault}

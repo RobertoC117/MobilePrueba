@@ -23,7 +23,7 @@ export const addToCart = async({id, quantity, price}) =>{
         if(exist){
             cart[id].quantity += quantity
             cart[id].price = price
-            cart[id].subtotal = quantity * price
+            cart[id].subtotal = cart[id].quantity * price
         }
         else{
             cart[id] = {quantity, price, subtotal: price*quantity}

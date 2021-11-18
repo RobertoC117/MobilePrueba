@@ -26,7 +26,7 @@ export default function ListHorizontalBrands() {
                 {
                     brands && (
                         brands.map(item => (
-                            <TouchableNativeFeedback key={item.id} onPress={()=>console.log("Hola")}>
+                            <TouchableNativeFeedback key={item.id} onPress={()=>navigation.push("search",{busqueda: item.name, filtro:"marca"})}>
                                 <Surface style={styles.card}>
                                     <Avatar.Image
                                         source={{uri:item.img_url}}

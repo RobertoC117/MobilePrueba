@@ -8,8 +8,7 @@ export default function Header(props) {
 
     const { navigation, route, back } = props
     const params = route.params
-
-    // console.log(props)
+    const name = route.name !== "main-home" ? true : false
 
     const [query, setQuery] = useState(params?.busqueda || "")
 
@@ -22,13 +21,13 @@ export default function Header(props) {
     const search = async() =>{
         if(query === "") return
         await addItem(query)
-        navigation.push("search",{busqueda: query})
+        navigation.push("search",{busqueda: query, filtro:"nombre"})
     }
 
     return (
         <View style={styles.container}>
             {
-                back && (
+                back && name && (
                     <TouchableNativeFeedback onPress={()=>navigation.goBack()}>
                         <View style={styles.backButtonContainer}>
                             <AwesomeIcons name={"chevron-left"} style={{fontSize:20, color:"white"}} size={30} />
@@ -36,13 +35,13 @@ export default function Header(props) {
                     </TouchableNativeFeedback>
                 )
             }
-            <View style={[ back ? styles.containerTxt : styles.largeTxtConatiner ]}>
+            <View style={[ back && name ? styles.containerTxt : styles.largeTxtConatiner ]}>
                 <Searchbar
                     value={query}
                     onChangeText={setNewValue}
                     style={styles.searchbar}
-                    onFocus={back ? null : goToSearch}
-                    onSubmitEditing={!back ? null : search}
+                    onFocus={back && name ? null : goToSearch}
+                    onSubmitEditing={!back && name ? null : search}
                 />
             </View>
         </View>

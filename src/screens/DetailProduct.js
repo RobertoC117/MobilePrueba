@@ -19,8 +19,6 @@ export default function DetailProduct(props) {
     const [product, setProduct] = useState(null)
     const [cantidad, setCantidad] = useState(1)
 
-    console.log(props.route)
-
     const navigation = useNavigation()
 
     useEffect(()=>{

@@ -2,7 +2,7 @@ import React,{useState} from 'react'
 import { View, StyleSheet } from 'react-native'
 import { Button, Menu } from 'react-native-paper'
 
-export default function FiltersControl({filter, setFilter}) {
+export default function FiltersControl({filter, setFilter, updateUrlFilter}) {
 
     const [visible, setVisible] = useState(false)
 
@@ -11,6 +11,7 @@ export default function FiltersControl({filter, setFilter}) {
     const closeMenu = () => setVisible(false);
 
     const changeFilter = (value, label) =>{
+        updateUrlFilter(filter.value, value)
         setFilter({value, label})
         closeMenu()
     }

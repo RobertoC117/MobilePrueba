@@ -15,7 +15,7 @@ export default function HistoryItem(props) {
     }
 
     const search = () =>{
-        navigation.push("search",{busqueda: text})
+        navigation.push("search",{busqueda: text,  filtro:"nombre"})
     }
 
     return (

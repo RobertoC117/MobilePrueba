@@ -57,3 +57,21 @@ export const getProduct = async(id) =>{
         }
     }
 }
+
+export const searchProduct = async(url) =>{
+    try {
+        let config = {
+            method:"GET",
+            url,
+            headers:{ "Content-Type": "application/json"},
+        }
+        const {status, data} = await axios(config)
+        return{ status, data }
+    } catch (error) {
+        console.log("error", error.response.data)
+        return {
+            status: error.response.status,
+            data: error.response.data
+        }
+    }
+}

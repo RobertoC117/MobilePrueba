@@ -23,11 +23,11 @@ export default function AppNavigation() {
                 component={HomeStack} 
                 options={{title:"Inicio"}}
             />
-            <Tab.Screen 
+            {/* <Tab.Screen 
                 name="search" 
                 component={SearchStack} 
                 options={{title:"Busqueda"}}
-            />
+            /> */}
             <Tab.Screen 
                 name="cart" 
                 component={CartStack} 

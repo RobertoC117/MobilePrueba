@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { HISTORY } from '../utils/constants'
-import {v4 as uuidv4} from 'uuid'
 
 export const getHistory = async() =>{
     try {
@@ -77,6 +76,16 @@ export const deleteItem = async(index) =>{
     
     } catch (error) {
         console.log(error)    
+    }
+}
+
+export const deleteHistory = async() =>{
+    try {
+        await AsyncStorage.removeItem(HISTORY)
+        return true
+    } catch (error) {
+        console.log(error)
+        return null
     }
 }
 

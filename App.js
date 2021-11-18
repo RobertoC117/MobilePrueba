@@ -7,6 +7,8 @@ import * as Google from 'expo-google-app-auth';
 
 import { TOKEN, ACCESS_TOKEN } from './src/utils/constants';
 import { getToken, removeToken, setToken } from './src/api/token';
+import {deteleCart} from './src/api/cart'
+import { deleteHistory } from './src/api/history';
 import { androidClientId, } from './src/utils/constants'
 import AuthContext from './src/context/AuthContext'
 import MainNavigation from './src/navigation/MainNavigation';
@@ -65,6 +67,8 @@ export default function App() {
           await Google.logOutAsync({accessToken: auth.accessToken, androidClientId})
         }
         await removeToken(TOKEN)
+        await deteleCart()
+        await deleteHistory()
         setAuth(null)
       } catch (error) {
         ToastAndroid.showWithGravity("Error al cerrar sesion", ToastAndroid.LONG, ToastAndroid.CENTER)

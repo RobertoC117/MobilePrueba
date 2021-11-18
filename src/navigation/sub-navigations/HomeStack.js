@@ -49,7 +49,7 @@ export default function HomeStack() {
     }
 
     return (
-        <Stack.Navigator screenOptions={options}>
+        <Stack.Navigator screenOptions={options} >
             <Stack.Screen name="main-home" component={Main} />
             <Stack.Screen name="categories" component={CategoriesList} options={{headerTitle:"Categorias"}} />
             <Stack.Screen name="brands" component={BrandList} options={{headerTitle:"Marcas"}} />

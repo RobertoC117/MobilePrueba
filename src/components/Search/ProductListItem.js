@@ -1,25 +1,38 @@
 import React from 'react'
-import { View, Text, StyleSheet, Image, TouchableNativeFeedback } from 'react-native'
+import { View, StyleSheet, Image, TouchableNativeFeedback } from 'react-native'
 import { Caption, Title } from 'react-native-paper'
+import { priceWithDiscount } from '../../utils/functions'
+import { useNavigation } from '@react-navigation/core'
 
-export default function ProductListItem() {
+export default function ProductListItem({product}) {
+
+    const navigation = useNavigation()
+
     return (
-        <TouchableNativeFeedback onPress={()=>console.log("Ok")}>
+        <TouchableNativeFeedback onPress={()=>navigation.push("detail", {idProduct: product.id})}>
             <View style={styles.container}>
                 <View style={styles.containerPhoto}>
-                    <Image style={styles.img} source={{ uri: 'https://picsum.photos/700' }} />
+                    <Image style={styles.img} source={{ uri: product. main_img || 'https://picsum.photos/700' }} />
                 </View>
                 <View style={styles.containerInfo}>
                     <Title style={styles.title} numberOfLines={2}>
-                        Nombre del producto honhsh jjdjj djdjjdjd
+                        {product.title}
                     </Title>
-                    <Caption style={styles.brand}>Marca</Caption>
-                    {/* <Title style={styles.price}>$60</Title> */}
-                    <Title style={styles.oldPrice}>Antes: $60</Title>
-                    <View style={styles.discountInfo}>
-                        <Title style={styles.newPrice}>Ahora: $60</Title>
-                        <Title style={styles.save}>Ahorras: $60</Title>
-                    </View>
+                    <Caption style={styles.brand}>{product.brand}</Caption>
+                    {
+                        !product.discount ? (
+                            <Title style={styles.price}>${product.price}</Title>
+
+                        ):(
+                            <>
+                                <Title style={styles.oldPrice}>Antes: ${product.price}</Title>
+                                <View style={styles.discountInfo}>
+                                    <Title style={styles.newPrice}>Ahora: ${priceWithDiscount(product.price, product.discount)}</Title>
+                                    <Title style={styles.save}>Ahorras: ${product.price * product.discount/100}</Title>
+                                </View>
+                            </>
+                        )
+                    }
                 </View>
             </View>
         </TouchableNativeFeedback>
