@@ -1,5 +1,6 @@
 import React,{useState, useEffect, useCallback} from 'react'
 import { ScrollView, View, StyleSheet} from 'react-native'
+import { useNavigation } from '@react-navigation/core'
 import CartList from '../../components/Cart/CartList'
 import EmptyList from '../../components/EmptyList'
 import Basket from '../../../assets/images/basket.png'
@@ -8,7 +9,7 @@ import { useFocusEffect } from '@react-navigation/core'
 import TransparentScreenLoading from '../../components/TransparentScreenLoading'
 import { Button, Title } from 'react-native-paper'
 import { formsStyles } from '../../styles'
-
+import useAuth from '../../hooks/useAuth'
 
 export default function Main() {
 
@@ -16,6 +17,9 @@ export default function Main() {
     const [loading, setLoading] = useState(false)
     const [reload, setReload] = useState(false)
     const [total, setTotal] = useState(0)
+
+    const navigation = useNavigation()
+    const {auth} = useAuth()
 
     useFocusEffect(
         useCallback(()=>{
@@ -26,10 +30,16 @@ export default function Main() {
                 const total_result = await getTotal()
                 setTotal(total_result)
                 setLoading(false)
-                console.log("CARGANDO CARRITO")
             })()
         },[reload])
     )
+
+    const comprar = () =>{
+        if(auth)
+            navigation.push('select-address')
+        else
+            navigation.navigate('account')
+    }
 
     if(loading && !products){
         return (<TransparentScreenLoading text="Cargando carrito" />)
@@ -66,6 +76,7 @@ export default function Main() {
                                 <Button
                                     mode="contained"
                                     style={formsStyles.btnDefault}
+                                    onPress={comprar}
                                 >
                                     comprar
                                 </Button>
